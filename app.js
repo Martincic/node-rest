@@ -5,14 +5,17 @@ const port = 3000;
 const departmentsRouter = require('./routes/departments');
 const timecardRouter = require('./routes/timecards');
 const employeeRouter = require('./routes/employees');
-const basePath = 'http://192.168.0.23:3000/';
+const basePath = 'http://192.168.0.23:3000/MarasovicKP3/CompanyServices';
 
 console.log("app use routers");
-app.use(basePath + '/departments', departmentsRouter);
-app.use(basePath + '/department', departmentsRouter);
 
-app.use(basePath + '/timecard', timecardRouter);
-app.use(basePath + '/employee', employeeRouter);
+app.get('/test', (req, res) => {
+    res.send('Hello World!')
+  });
+
+app.use('/departments', departmentsRouter);
+app.use('/timecard', timecardRouter);
+app.use('/employee', employeeRouter);
 
 
 app.listen(port, () => {

@@ -21,7 +21,8 @@ class Departments {
         //todo: provjera za dept_id
         if (company){
             let result = dataLayer.getDepartment(company, dept_id);
-            if(result.length > 0) {
+            
+            if(!result == null && result.length > 0) {
                 response = result;
             }else {
                 response = {"error": "No department found for dept_id: " + dept_id + ', company: ' + company + ' .'};
