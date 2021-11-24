@@ -5,7 +5,7 @@ const port = 3000;
 const departmentsRouter = require('./routes/departments');
 const timecardRouter = require('./routes/timecards');
 const employeeRouter = require('./routes/employees');
-const basePath = 's';
+const basePath = 'http://192.168.0.23:3000/';
 
 console.log("app use routers");
 app.use(basePath + '/departments', departmentsRouter);
