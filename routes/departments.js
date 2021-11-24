@@ -4,7 +4,12 @@ console.log("department router..");
 const departments = require('../business/departments');
 
 router.get('/', (req, res) => {
-    res.json(departments.get(req.query.company));
+    res.json(departments.getSingle(req.query.company, req.query.dept_id));
+});
+
+router.post('/', (req, res) => {
+    let dept = departments.insert(req.body.company, req.query.dept_name, req.query.dept_no, req.query.location);
+    res.json(dept);
 });
 
 

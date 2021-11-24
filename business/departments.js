@@ -5,7 +5,7 @@ class Departments {
         let response;
         if (company){
             let result = dataLayer.getAllDepartment(company);
-            if(result.length > 0) {
+            if(!result == null && result.length > 0) {
                 response = result;
             }else {
                 response = {"error": "No departments found for " + company + '.'};
@@ -22,7 +22,7 @@ class Departments {
         if (company){
             let result = dataLayer.getDepartment(company, dept_id);
             
-            if(!result == null && result.length > 0) {
+            if(!result == null) {
                 response = result;
             }else {
                 response = {"error": "No department found for dept_id: " + dept_id + ', company: ' + company + ' .'};
@@ -35,7 +35,20 @@ class Departments {
 
     insert(company, dept_name, dept_no, location){
         let response;
+        //todo: provjera za dept_id
+        if (company){
+            let dept = new dataLayer.Department(company,dept_name, dept_no, location);
+            let result = dataLayer.insertDepartment(dept);
 
+            if(!result == null) {
+                response = result;
+            }else {
+                response = {"error": "Can't add department: " +  dept_name + ', dept_no:' + dept_no + ' company: ' + company + ', location:' + location + ' .'};
+            }
+        } else {
+            response = { "error": "The comapny name is missing." };
+        }
+        return response;
     }
 
     update(department){
