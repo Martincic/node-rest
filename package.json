@@ -1,0 +1,25 @@
+{
+  "name": "marasovickp3",
+  "version": "1.0.0",
+  "keywords": [
+    "util",
+    "functional",
+    "server",
+    "client",
+    "browser"
+  ],
+  "author": "Kristina Marasovic",
+  "contributors": [],
+  "dependencies": {
+    "companydata": "file:companydata",
+    "express": "^4.17.1"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "start-nodemon": "nodemon app.js",
+    "start-nodemon inspect": "nodemon inspect app.js"
+  },
+  "main": "app.js",
+  "license": "ISC",
+  "description": ""
+}
