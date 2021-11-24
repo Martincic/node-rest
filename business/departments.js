@@ -16,7 +16,7 @@ class Departments {
         return response;
     }
 
-    get(company, dept_id){
+    getSingle(company, dept_id){
         let response;
         //todo: provjera za dept_id
         if (company){
@@ -31,6 +31,19 @@ class Departments {
             response = { "error": "The comapny name is missing." };
         }
         return response;
+    }
+
+    insert(company, dept_name, dept_no, location){
+        let response;
+
+    }
+
+    update(department){
+
+    }
+
+    delete(company, dept_id){
+
     }
 }
 
