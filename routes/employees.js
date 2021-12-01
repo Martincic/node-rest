@@ -40,4 +40,19 @@ router.put('/', (req, res) => {
     else res.json({error: "There was a problem updating employee "+req.body.emp_id});
 });
 
+// /app/employee
+// deletes employee
+// *RADI
+router.delete('/', (req, res) => {
+    let result = employees.delete(req.query.emp_id);
+    let msg;
+    if(result) {
+        msg = "Successfull deletion of employee "+req.query.emp_id;
+    }
+    else msg = "An error occured. No employees were deleted. Please check id."
+    res.json({
+        data: msg
+    });
+});
+
 module.exports = router;

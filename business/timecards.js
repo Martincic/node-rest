@@ -37,7 +37,8 @@ class Timecards {
         let response;
         //todo: provjera za dept_id
         if (emp_id){
-            let tc = new dataLayer.Timecard(emp_id, start_time, end_time);
+            let tc = new dataLayer.Timecard(start_time, end_time, emp_id);
+            console.log("TC: ", tc);
             let result = dataLayer.insertTimecard(tc);
 
             if(result != null) {
@@ -50,6 +51,10 @@ class Timecards {
         }
         return response;
     }
+
+    //TODO: PUT
+
+    //TODO: DELETE
 }
 
 module.exports = new Timecards();

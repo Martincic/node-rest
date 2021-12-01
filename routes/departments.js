@@ -37,7 +37,7 @@ router.put('/', (req, res) => {
 });
 
 // /app/department
-// updates department
+// deletes department
 // *RADI
 router.delete('/', (req, res) => {
     let result = departments.delete(req.query.company, req.query.dept_id);

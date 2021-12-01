@@ -53,13 +53,15 @@ class Employees {
         return response;
     }
 
-    //TODO: TEST
-
     update(employee){
         if(dataLayer.updateEmployee(employee) == null) return false;
         else return true;
     }
 
+    delete(emp_id) {
+        if(dataLayer.deleteEmployee(emp_id) == 0) return false;
+        else return true;
+    }
 }
 
 module.exports = new Employees();
