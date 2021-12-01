@@ -34,6 +34,32 @@ class Employees {
         return response;
     }
 
+    //TODO: TEST
+    insert(emp_name, emp_no, hire_date, job, salary, dept_id, mng_id){
+        let response;
+        //todo: provjera za emp_id
+        if (emp_name){
+            let emp = new dataLayer.Employee(emp_name, emp_no, hire_date, job, salary, dept_id, mng_id);
+            let result = dataLayer.insertEmployee(emp);
+
+            if(result != null) {
+                response = result;
+            }else {
+                response = {"error": "Can't add employee: " +  emp_name + ', emp_no:' + emp_no + ' hire date: ' + hire_date + ', job:' + job + ' salary: ' + salary + ' dept_id: ' + dept_id + ' mng_id: ' + mng_id + ' .'};
+            }
+        } else {
+            response = { "error": "The employee name is missing." };
+        }
+        return response;
+    }
+
+    //TODO: TEST
+
+    update(employee){
+        if(dataLayer.updateEmployee(employee) == null) return false;
+        else return true;
+    }
+
 }
 
 module.exports = new Employees();

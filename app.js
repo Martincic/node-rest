@@ -20,7 +20,7 @@ console.log("app use routers");
 app.use('/department', departmentsRouter); 
 
 // TIMECARD
-app.use('/timecards', timecardRouter);
+app.use('/timecard', timecardRouter);
 
 // EMPLOYEE
 app.use('/employee', employeeRouter);

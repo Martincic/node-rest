@@ -235,7 +235,6 @@ function updateEmployee(inEmp) {
             [inEmp.emp_name,inEmp.emp_no,inEmp.hire_date,inEmp.job,inEmp.salary,inEmp.dept_id,inEmp.mng_id,inEmp.emp_id]);
         results = connection.query("SELECT * FROM employee WHERE emp_id = ?",
             [inEmp.emp_id]);
-
         if (results.length == 1) {
             var d = new Date(results[0].hire_date);      
             var dString = d.toISOString().slice(0,10)
@@ -243,7 +242,7 @@ function updateEmployee(inEmp) {
                 dString,results[0].job,results[0].salary,results[0].dept_id,
                 results[0].mng_id,results[0].emp_id);
         } else {
-             return null;
+            return null;
         }
 
     } catch (exception) {
