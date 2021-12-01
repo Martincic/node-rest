@@ -5,7 +5,7 @@ class Departments {
         let response;
         if (company){
             let result = dataLayer.getAllDepartment(company);
-            if(!result == null && result.length > 0) {
+            if(result != null && result.length > 0) {
                 response = result;
             }else {
                 response = {"error": "No departments found for " + company + '.'};
@@ -22,7 +22,7 @@ class Departments {
         if (company){
             let result = dataLayer.getDepartment(company, dept_id);
             
-            if(!result == null) {
+            if(result != null) {
                 response = result;
             }else {
                 response = {"error": "No department found for dept_id: " + dept_id + ', company: ' + company + ' .'};
@@ -40,7 +40,7 @@ class Departments {
             let dept = new dataLayer.Department(company,dept_name, dept_no, location);
             let result = dataLayer.insertDepartment(dept);
 
-            if(!result == null) {
+            if(result != null) {
                 response = result;
             }else {
                 response = {"error": "Can't add department: " +  dept_name + ', dept_no:' + dept_no + ' company: ' + company + ', location:' + location + ' .'};
@@ -52,11 +52,16 @@ class Departments {
     }
 
     update(department){
-
+        return dataLayer.updateDepartment(department);
     }
 
     delete(company, dept_id){
+        console.log(company, dept_id);
+        let response = dataLayer.deleteDepartment(company, dept_id);
 
+        if (response == 0) return false;
+        
+        return true;
     }
 }
 
