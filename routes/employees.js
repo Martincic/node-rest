@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { Employee } = require('companydata');
 
-console.log("employee router..");
 const employees = require('../business/employees');
 
 // app/employee/all

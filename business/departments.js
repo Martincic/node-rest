@@ -1,4 +1,5 @@
 const dataLayer = require('companydata');
+const validator = require('./validator');
 
 class Departments {
     get(company){
@@ -11,25 +12,35 @@ class Departments {
                 response = {"error": "No departments found for " + company + '.'};
             }
         } else {
-            response = { "error": "The comapny name is missing." };
+            response = { "error": "The company name is missing." };
         }
         return response;
     }
 
     getSingle(company, dept_id){
         let response;
-        //todo: provjera za dept_id
-        if (company){
-            let result = dataLayer.getDepartment(company, dept_id);
-            
-            if(result != null) {
-                response = result;
-            }else {
-                response = {"error": "No department found for dept_id: " + dept_id + ', company: ' + company + ' .'};
-            }
-        } else {
-            response = { "error": "The comapny name is missing." };
+        validator.clearValidator();
+        // validator.isInput(company,"Enter company name.");
+        // validator.isInput(dept_id,"Enter department id.");
+
+        // if(validator.hasFailed())
+        // response = {"errors": validator.getErrors()};
+        // else {
+
+        if (!company){
+            response = { "error": "Enter missing company name." };
+
+        }else if(!dept_id){
+            response = { "error": "Enter missing department id." };
+        }else {
+            let dept = validator.departmentExists(company, dept_id);
+
+            if(validator.hasFailed())
+                response = {"errors": validator.getErrors()};
+            else
+                response = dept;
         }
+
         return response;
     }
 

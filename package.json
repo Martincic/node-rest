@@ -12,7 +12,9 @@
   "contributors": [],
   "dependencies": {
     "companydata": "file:companydata",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "moment": "^2.29.1",
+    "moment-business": "^3.0.1"
   },
   "scripts": {
     "start": "node app.js",
