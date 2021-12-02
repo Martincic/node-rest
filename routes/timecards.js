@@ -33,26 +33,29 @@ router.post('/', (req, res) => {
 
 // /app/department
 // updates department
-// *NE RADI
-// router.put('/', (req, res) => {
-//     let updatedDept = new Department(req.body.company, req.body.dept_name, req.body.dept_no, req.body.location, req.body.dept_id);
-//     let dept = departments.update(updatedDept);
-//     res.json(dept);
-// });
+// *RADI
+router.put('/', (req, res) => {
+    let updatedTimecard = new Timecard();
+    updatedTimecard.setStartTime(req.body.start_time);
+    updatedTimecard.setEndTime(req.body.end_time);
+    updatedTimecard.setId(req.body.timecard_id);
+    let tc = timecards.update(updatedTimecard);
+    res.json(tc);
+});
 
 // /app/department
 // updates department
-// *NE RADI
-// router.delete('/', (req, res) => {
-//     let result = departments.delete(req.query.company, req.query.dept_id);
-//     let msg;
-//     if(result) {
-//         msg = "Successfull deletion of department "+req.query.dept_id + " for company " + req.query.company;
-//     }
-//     else msg = "An error occured. No departments were deleted. Please check company name and department id."
-//     res.json({
-//         data: msg
-//     });
-// });
+// *RADI
+router.delete('/', (req, res) => {
+    let result = timecards.delete(req.query.timecard_id);
+    let msg;
+    if(result) {
+        msg = "Successfull deletion of timecard "+req.query.timecard_id ;
+    }
+    else msg = "An error occured. No timecards were deleted. Please check timecard id."
+    res.json({
+        data: msg
+    });
+});
 
 module.exports = router;

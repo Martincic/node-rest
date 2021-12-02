@@ -52,9 +52,24 @@ class Timecards {
         return response;
     }
 
-    //TODO: PUT
+    update(timecard){
+        let tc = dataLayer.getTimecard(timecard.timecard_id);
 
-    //TODO: DELETE
+        if(timecard == null) return "Timecard does not exist";
+        
+        tc.setStartTime(timecard.start_time);
+        tc.setEndTime(timecard.end_time);
+        tc.setId(timecard.timecard_id);
+        let updated = dataLayer.updateTimecard(tc);
+
+        if(updated == null) return "Error!";
+        else return updated;
+    }
+
+    delete(timecard_id) {
+        if(dataLayer.deleteTimecard(timecard_id) == 0) return false;
+        else return true;
+    }
 }
 
 module.exports = new Timecards();
