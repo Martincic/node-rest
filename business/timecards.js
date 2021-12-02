@@ -1,93 +1,114 @@
 const dataLayer = require('companydata');
+const { employeeExists } = require('./validator');
+const validator = require('./validator');
 
 class Timecards {
     get(emp_id){
-        // let response;
-        // validator.clearValidator();
-        
-        // if (!emp_id){
-        //     response = { "error": "Enter missing employee id." };
-        // }else {
-        //     validator.employeeExists(emp_id);
-
-        //     let tc = dataLayer.getAllTimecard(emp_id);
-        //     validator.isEmpty(tc, "emplpyee with id: " + emp_id);
-            
-        //     if(validator.hasFailed()) 
-        //         response = {"errors": validator.getErrors()};
-        //     else
-        //         response = { success: tc } ;
-        // }
-                        
-        // return response;
-
-
         let response;
-        if (emp_id){
-            let result = dataLayer.getAllTimecard(emp_id);
-            if(result != null && result.length > 0) {
-                response = result;
-            }else {
-                response = {"error": "No timecards found for " + emp_id + '.'};
-            }
-        } else {
-            response = { "error": "The employee id is missing." };
+        validator.clearValidator();
+
+        if (!emp_id){
+            response = { "error": "Enter missing employee id." };
+        }else {
+            validator.employeeExists(emp_id);
+
+            let tc = dataLayer.getAllTimecard(emp_id);
+            validator.isEmpty(tc, "employee with id: " + emp_id);
+            
+            if(validator.hasFailed()) 
+                response = {"errors": validator.getErrors()};
+            else
+                response = { success: tc } ;
         }
+                        
         return response;
     }
 
     getSingle(timecard_id){
         let response;
-        //todo: provjera za timecard_id
-        if (timecard_id){
-            let result = dataLayer.getTimecard(timecard_id);
-            
-            if(result != null) {
-                response = result;
-            }else {
-                response = {"error": "No timecard found for timecard_id: " + timecard_id + ' .'};
-            }
-        } else {
-            response = { "error": "The timecard_id is missing." };
+        validator.clearValidator();
+        
+        if (!timecard_id){
+            response = { "error": "Enter missing timecard id." };
+        }else {
+            validator.timecardExists(timecard_id);
+            if(validator.hasFailed()) response = { error: validator.getErrors() }
+            else response = { success: dataLayer.getTimecard(timecard_id) } ;
         }
         return response;
     }
     
-    insert(emp_id, start_time, end_time){
+    insert(emp_id, start_time, end_time)
+    {
+        if(!emp_id) return { "error": "The employee id is missing." };
         let response;
-        //todo: provjera za dept_id
-        if (emp_id){
-            let tc = new dataLayer.Timecard(start_time, end_time, emp_id);
-            let result = dataLayer.insertTimecard(tc);
+        
+        validator.clearValidator();
 
-            if(result != null) {
-                response = result;
-            }else {
-                response = {"error": "Can't add timecard for employee id: " +  emp_id + ', start time:' + start_time + ', end time: ' + end_time + ' .'};
-            }
-        } else {
-            response = { "error": "The employee id is missing." };
+        validator.checkFormat(start_time);
+        validator.checkFormat(end_time);
+
+        validator.validateTimecardDates(start_time, end_time, emp_id);
+        validator.employeeExists(emp_id);
+
+        if(validator.hasFailed()) response = { error: validator.getErrors() };
+        else {
+            let tc = new dataLayer.Timecard(start_time, end_time, emp_id);
+            response = { success: dataLayer.insertTimecard(tc) };
         }
+        
         return response;
     }
 
     update(timecard){
-        let tc = dataLayer.getTimecard(timecard.timecard_id);
+        let response;
+        validator.clearValidator();
 
-        if(timecard == null) return "Timecard does not exist";
+        validator.checkFormat(timecard.start_time);
+        validator.checkFormat(timecard.end_time);
+
+        validator.timecardExists(timecard.timecard_id);
+        validator.validateTimecardDates(timecard.start_time, timecard.end_time, timecard.emp_id, true);
+
+        if(validator.hasFailed()) response = { errors: validator.getErrors() };
+        else response = { success: dataLayer.updateTimecard(timecard) };
+
+        return response;
+
+        // let tc = dataLayer.getTimecard(timecard.timecard_id);
+
+        // if(timecard == null) return "Timecard does not exist";
         
-        tc.setStartTime(timecard.start_time);
-        tc.setEndTime(timecard.end_time);
-        tc.setId(timecard.timecard_id);
-        let updated = dataLayer.updateTimecard(tc);
+        // tc.setStartTime(timecard.start_time);
+        // tc.setEndTime(timecard.end_time);
+        // tc.setId(timecard.timecard_id);
+        // let updated = dataLayer.updateTimecard(tc);
 
-        if(updated == null) return "Error!";
-        else return updated;
+        // if(updated == null) return "Error!";
+        // else return updated;
     }
 
     delete(timecard_id) {
-        if(dataLayer.deleteTimecard(timecard_id) == 0) return false;
-        else return true;
+        let response;
+        validator.clearValidator();
+
+        if (!timecard_id){
+            response = { "error": "Enter missing timecard id." };
+
+        }else {
+            validator.timecardExists(timecard_id);
+
+            if(validator.hasFailed()) 
+                response = { errors: validator.getErrors() };
+            else{
+                dataLayer.deleteTimecard(timecard_id);
+                response = {success: "Timecard " + timecard_id + " deleted." };
+            }
+        }
+        return response;
+
+        // if(dataLayer.deleteTimecard(timecard_id) == 0) return false;
+        // else return true;
     }
 }
 

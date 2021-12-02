@@ -88,9 +88,6 @@ class Employees {
             }
         }
         return response;
-
-        // if(dataLayer.deleteEmployee(emp_id) == 0) return false;
-        // else return true;
     }
 }
 

@@ -1,7 +1,6 @@
 const dataLayer = require('companydata');
 const moment = require('moment');
 const business = require('moment-business');
-const timecards = require('./timecards');
 
 class Validator {
     success = true;
@@ -28,11 +27,7 @@ class Validator {
         this.errorMessages.push(error);
     }
 
-    // isInput(input, msg){
-    //     if(!input)   this.errorMessages.push(msg);
-    // }
-
-    getTimestamp(timestamp) {
+    checkFormat(timestamp) {
         if (timestamp == undefined || timestamp == null || timestamp == '') {
             this.addErr("Timestamp must be defined.");
         }
@@ -41,8 +36,6 @@ class Validator {
             return Date.parse(timestamp);
         } 
         else this.addErr("Timestamp not matching desired format: " + this.DATE_FORMAT);
-
-        return null;
     }
     
     employeeExists(emp_id){
@@ -118,29 +111,30 @@ class Validator {
         return parsed;
     }
 
-     validateTimecardDates(startdate, enddate, emp_id, update) {
+     validateTimecardDates(startdate, enddate, emp_id, update = false) {
         let start = moment(Date.parse(startdate));
         let end = moment(Date.parse(enddate));
-
+        console.log(start.get('hour'), startdate, end.get('hour'), enddate);
         if(end.isBefore(start)) this.addErr("The start date must be before end date");
-        if(!end.isSame(start)) this.addErr("Start and end dates must be on the same date");
-        if(business.isWeekyyyyyendDay(start)) this.addErr("Start date cannot occur on Saturday or Sunday.");
+        if(!end.isSame(start, 'day')) this.addErr("Start and end dates must be on the same date");
+        if(business.isWeekendDay(start)) this.addErr("Start date cannot occur on Saturday or Sunday.");
 
-        if( (end.hour - start.hour) < 1) this.addErr("There must be at least 1 hour difference between timestamps.");
-        if(start.hour < 6) this.addErr("Start hour must be after 6am");
-        if(start.hour > 18) this.addErr("End hour must be before 6pm");
+        if( (end.get('hour') - start.get('hour')) < 1) this.addErr("There must be at least 1 hour difference between timestamps.");
+        if(start.get('hour') < 6) this.addErr("Start hour must be after 6am");
+        if(start.get('hour') > 18) this.addErr("End hour must be before 6pm");
         
-        if( (start.dayOfYear - this.now.dayOfYear) > 7) this.addErr("You can't start more then 7 days ago.");
+        if( (start.get('day') - moment().day) > 7) this.addErr("You can't start more then 7 days ago.");
 
-        timecards = dataLayer.getAllTimecard(emp_id);
-        existing_dates = [];
+        let timecards = dataLayer.getAllTimecard(emp_id);
+        let existing_dates = [];
         
         timecards.forEach(timecard => {
-            parsed = moment(Date.parse(timecard.startdate));
+            let parsed = moment(Date.parse(timecard.startdate));
             existing_dates.push(moment(parsed));
         });
 
-        if(existing_dates.includes(start)) this.addErr("A timecard already exists for the given date.");
+        if(!update && existing_dates.includes(start)) this.addErr("A timecard already exists for the given date.");
+
     }
 }
 

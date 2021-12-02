@@ -7,7 +7,8 @@ const timecards = require('../business/timecards');
 // app/timecard/all
 // returns all timecards
 router.get('/all', (req, res) => {
-    res.json(timecards.get(req.query.emp_id));
+    let result = timecards.get(req.query.emp_id);
+    res.json(result);
 });
 
 // app/timecard
@@ -40,14 +41,7 @@ router.put('/', (req, res) => {
 // updates department
 router.delete('/', (req, res) => {
     let result = timecards.delete(req.query.timecard_id);
-    let msg;
-    if(result) {
-        msg = "Successfull deletion of timecard "+req.query.timecard_id ;
-    }
-    else msg = "An error occured. No timecards were deleted. Please check timecard id."
-    res.json({
-        data: msg
-    });
+    res.json(result);
 });
 
 module.exports = router;
