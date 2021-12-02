@@ -2,6 +2,26 @@ const dataLayer = require('companydata');
 
 class Timecards {
     get(emp_id){
+        // let response;
+        // validator.clearValidator();
+        
+        // if (!emp_id){
+        //     response = { "error": "Enter missing employee id." };
+        // }else {
+        //     validator.employeeExists(emp_id);
+
+        //     let tc = dataLayer.getAllTimecard(emp_id);
+        //     validator.isEmpty(tc, "emplpyee with id: " + emp_id);
+            
+        //     if(validator.hasFailed()) 
+        //         response = {"errors": validator.getErrors()};
+        //     else
+        //         response = { success: tc } ;
+        // }
+                        
+        // return response;
+
+
         let response;
         if (emp_id){
             let result = dataLayer.getAllTimecard(emp_id);

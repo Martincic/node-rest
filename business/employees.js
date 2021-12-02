@@ -1,73 +1,96 @@
 const dataLayer = require('companydata');
 const validator = require('./validator');
+const { Employee } = require('companydata');
 
 class Employees {
-    get(company, dept_id){
+    get(company){
         let response;
-        //todo: provjera za company
-        if (company){
-            let result = dataLayer.getAllEmployee(company);
-            if(result != null && result.length > 0) {
-                response = result;
-            }else {
-                response = {"error": "No employees found for company: " + company + ' .'};
-            }
-        } else {
-            response = { "error": "The company name is missing." };
+        validator.clearValidator();
+        
+        if (!company){
+            response = { "error": "Enter missing company name." };
+        }else {
+            let emp = dataLayer.getAllEmployee(company);
+            validator.isEmpty(emp, "company: " + company);
+            
+            if(validator.hasFailed()) 
+                response = {"errors": validator.getErrors()};
+            else
+                response = { success: emp } ;
         }
+                        
         return response;
     }
 
     getSingle(emp_id){
         let response;
-        //todo: provjera za emp_id
-        if (emp_id){
-            let result = dataLayer.getEmployee(emp_id);
-            
-            if(result != null) {
-                response = result;
-            }else {
-                response = {"error": "No employee found for dept_id: " + emp_id + ' .'};
-            }
-        } else {
-            response = { "error": "The employee id is missing." };
+        validator.clearValidator();
+
+        if (!emp_id){
+            response = { "error": "Enter missing employee id." };
+        }else {
+            validator.employeeExists(emp_id);
+            if(validator.hasFailed()) response = { error: validator.getErrors() }
+            else response = { success: dataLayer.getEmployee(emp_id) } ;
         }
         return response;
     }
 
-    //TODO: TEST
-    insert(emp_name, emp_no, hire_date, job, salary, dept_id, mng_id){
-        let response;
-        //todo: provjera za emp_id
-        if (emp_name){
-            let emp = new dataLayer.Employee(emp_name, emp_no, hire_date, job, salary, dept_id, mng_id);
-            let result = dataLayer.insertEmployee(emp);
-
-            if(result != null) {
-                response = result;
-            }else {
-                response = {"error": "Can't add employee: " +  emp_name + ', emp_no:' + emp_no + ' hire date: ' + hire_date + ', job:' + job + ' salary: ' + salary + ' dept_id: ' + dept_id + ' mng_id: ' + mng_id + ' .'};
-            }
-        } else {
-            response = { "error": "The employee name is missing." };
-        }
-        return response;
-    }
-
-    update(employee){
+    insert(company, emp_name, emp_no, hire_date, job, salary, dept_id, mng_id){
         let response;
         validator.clearValidator();
-        validator.validateUniqueEmplyeeID(employee.emp_id, employee.emp_id);
+
+        validator.departmentExists(company, dept_id);
+        if(mng_id != 0) validator.employeeExists(mng_id);
+        validator.validateHireDate(hire_date);
         
+        if(validator.hasFailed()) response = { error: validator.getErrors() };
+        else {
+            let emp = new Employee(emp_name, emp_no, hire_date, job, salary, dept_id, mng_id);
+            response = { success: dataLayer.insertEmployee(emp) };
+        };
+
+        return response;
+    }
+
+    update(employee, company){
+        let response;
+        validator.clearValidator();
+
+        validator.validateUniqueEmployeeID(employee.emp_id, 0);
+        validator.employeeExists(employee.emp_id);
+        validator.departmentExists(company, employee.dept_id);
+        validator.validateHireDate(employee.hire_date);
+        if(employee.mng_id != 0) validator.employeeExists(employee.mng_id);
+
+
         if(validator.hasFailed()) response = { errors: validator.getErrors() };
-        else response = { data: dataLayer.updateEmployee(employee) };
+        else response = { success: dataLayer.updateEmployee(employee) };
 
         return response;
     }
 
     delete(emp_id) {
-        if(dataLayer.deleteEmployee(emp_id) == 0) return false;
-        else return true;
+        let response;
+        validator.clearValidator();
+
+        if (!emp_id){
+            response = { "error": "Enter missing employee id." };
+
+        }else {
+            validator.employeeExists(emp_id);
+
+            if(validator.hasFailed()) 
+                response = { errors: validator.getErrors() };
+            else{
+                dataLayer.deleteEmployee(emp_id);
+                response = {success: "Employee " + emp_id + " deleted." };
+            }
+        }
+        return response;
+
+        // if(dataLayer.deleteEmployee(emp_id) == 0) return false;
+        // else return true;
     }
 }
 

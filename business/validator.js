@@ -72,7 +72,7 @@ class Validator {
             this.addErr("Department with id: "+dept_id+" was not found for company: " + company);
         }
     
-        return dept; // null if no timecard
+        return dept; // null if no department
     }
 
     isEmpty(list, reason) {
@@ -81,13 +81,13 @@ class Validator {
         }
     }
     
-    validateUniqueEmplyeeID(emp_no, current) {
-        let emp_nos = []
+    validateUniqueEmployeeID(emp_id, current) {
+        let emp_ids = []
 
         dataLayer.getAllEmployee().forEach(employee => {
-            if(employee.emp_id != current) emp_nos.push(employee.emp_id)
+            if(employee.emp_id != current) emp_ids.push(employee.emp_id)
         });
-        if(emp_nos.includes(emp_no)) this.addErr("Employee with id:" +emp_no+" already exists.");
+        if(emp_ids.includes(emp_id)) this.addErr("Employee with id:" +emp_id+" already exists.");
     }
 
     validateUniqueDeptNo(company, dept_no, current) {
@@ -101,17 +101,20 @@ class Validator {
 
     validateHireDate(hire_date){
         let parsed = null;
-        
-        if(moment(hire_date, this.DATE_FORMAT_SIMPLE, true).isValid()) {
-            parsed = Date.parse(hire_date);
-            parsed = moment(parsed);
-        } 
-        else this.addErr("Hire date: " + hire_date + " not matching desired format: " + this.DATE_FORMAT_SIMPLE);
-        
-        if(parsed.isAfter(this.now)) addErr("Hire date: " + hire_date + " must be in the past.");
-    
-        if(business.isWeekendDay(parsed)) addErr("Hire date: " + hire_date + " cannot occur on Saturday or Sunday.");
 
+        try{        
+            if(moment(hire_date, this.DATE_FORMAT_SIMPLE, true).isValid()) {
+                parsed = Date.parse(hire_date);
+                parsed = moment(parsed);
+            } 
+            else this.addErr("Hire date: " + hire_date + " not matching desired format: " + this.DATE_FORMAT_SIMPLE);
+            
+            if(parsed.isAfter(this.now)) this.addErr("Hire date: " + hire_date + " must be in the past or today.");
+            if(business.isWeekendDay(parsed)) this.addErr("Hire date: " + hire_date + " cannot occur on Saturday or Sunday.");
+        }
+        catch(err) {
+            this.addErr("Hire date is required. Use "+this.DATE_FORMAT_SIMPLE + " format.");
+        }
         return parsed;
     }
 
@@ -119,15 +122,15 @@ class Validator {
         let start = moment(Date.parse(startdate));
         let end = moment(Date.parse(enddate));
 
-        if(end.isBefore(start)) addErr("The start date must be before end date");
-        if(!end.isSame(start)) addErr("Start and end dates must be on the same date");
-        if(business.isWeekyyyyyendDay(start)) addErr("Start date cannot occur on Saturday or Sunday.");
+        if(end.isBefore(start)) this.addErr("The start date must be before end date");
+        if(!end.isSame(start)) this.addErr("Start and end dates must be on the same date");
+        if(business.isWeekyyyyyendDay(start)) this.addErr("Start date cannot occur on Saturday or Sunday.");
 
-        if( (end.hour - start.hour) < 1) addErr("There must be at least 1 hour difference between timestamps.");
-        if(start.hour < 6) addErr("Start hour must be after 6am");
-        if(start.hour > 18) addErr("End hour must be before 6pm");
+        if( (end.hour - start.hour) < 1) this.addErr("There must be at least 1 hour difference between timestamps.");
+        if(start.hour < 6) this.addErr("Start hour must be after 6am");
+        if(start.hour > 18) this.addErr("End hour must be before 6pm");
         
-        if( (start.dayOfYear - this.now.dayOfYear) > 7) addErr("You can't start more then 7 days ago.");
+        if( (start.dayOfYear - this.now.dayOfYear) > 7) this.addErr("You can't start more then 7 days ago.");
 
         timecards = dataLayer.getAllTimecard(emp_id);
         existing_dates = [];
@@ -137,7 +140,7 @@ class Validator {
             existing_dates.push(moment(parsed));
         });
 
-        if(existing_dates.includes(start)) addErr("A timecard already exists for the given date.");
+        if(existing_dates.includes(start)) this.addErr("A timecard already exists for the given date.");
     }
 }
 

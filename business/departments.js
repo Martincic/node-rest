@@ -17,7 +17,7 @@ class Departments {
             if(validator.hasFailed()) 
                 response = {"errors": validator.getErrors()};
             else
-                response = dept;
+                response = { success: dept } ;
         }
                         
         return response;
@@ -38,7 +38,7 @@ class Departments {
             if(validator.hasFailed())
                 response = {"errors": validator.getErrors()};
             else
-                response = dept;
+                response = { success: dept } ;
         }
 
         return response;
@@ -67,7 +67,7 @@ class Departments {
             else{
                 let dept = new Department(company,dept_name, dept_no, location);
                 let result = dataLayer.insertDepartment(dept);
-                response = result;
+                response = { success: result } ;
 
             }
         }
@@ -82,7 +82,7 @@ class Departments {
         validator.departmentExists(department.company, department.dept_id);
 
         if(validator.hasFailed()) response = { errors: validator.getErrors() };
-        else response = { data: dataLayer.updateDepartment(department) };
+        else response = { success: dataLayer.updateDepartment(department) };
 
         return response;
     }
