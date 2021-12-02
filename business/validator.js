@@ -65,7 +65,6 @@ class Validator {
 
     departmentExists(company, dept_id){
         let dept = dataLayer.getDepartment(company, dept_id);
-        console.log(dept_id);
         if(isNaN(dept_id)){
             this.addErr("Entered department id " + dept_id + " is not a number.");
         }

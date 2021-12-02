@@ -4,7 +4,6 @@ const { Department } = require('companydata');
 
 class Departments {
 
-
     get(company){
         let response;
         validator.clearValidator();
@@ -68,7 +67,6 @@ class Departments {
             else{
                 let dept = new Department(company,dept_name, dept_no, location);
                 let result = dataLayer.insertDepartment(dept);
-                console.log(result);
                 response = result;
 
             }
@@ -101,7 +99,6 @@ class Departments {
         }else {
             validator.departmentExists(company, dept_id);
 
-            console.log(validator.hasFailed());
             if(validator.hasFailed()) 
                 response = { errors: validator.getErrors() };
             else{

@@ -38,7 +38,6 @@ class Timecards {
         //todo: provjera za dept_id
         if (emp_id){
             let tc = new dataLayer.Timecard(start_time, end_time, emp_id);
-            console.log("TC: ", tc);
             let result = dataLayer.insertTimecard(tc);
 
             if(result != null) {
