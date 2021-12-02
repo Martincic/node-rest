@@ -133,7 +133,7 @@ class Validator {
         start_dates = [];
         
         timecards.forEach(timecard => {
-
+            
         });
         // for(Timecard tc: timecards) {
         //     Calendar tc_start = Calendar.getInstance();
