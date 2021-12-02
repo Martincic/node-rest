@@ -7,21 +7,18 @@ const employees = require('../business/employees');
 
 // app/employee/all
 // returns all employees
-// *RADI
 router.get('/all', (req, res) => {
     res.json(employees.get(req.query.company));
 });
 
 // app/employee
 // returns single employee
-// *RADI
 router.get('/', (req, res) => {
     res.json(employees.getSingle(req.query.emp_id));
 });
 
 // /app/employee
 // creates new employee
-// *RADI
 router.post('/', (req, res) => {
     console.log(req.body);
     let emp = employees.insert(req.body.emp_name, req.body.emp_no, req.body.hire_date, req.body.job, req.body.salary, req.body.dept_id, req.body.mng_id);
@@ -30,7 +27,6 @@ router.post('/', (req, res) => {
 
 // /app/employee
 // updates employee
-// *RADI
 router.put('/', (req, res) => {
     let updatedEmp = new Employee(req.body.emp_name, req.body.emp_no, req.body.hire_date, req.body.job, req.body.salary, req.body.dept_id, req.body.mng_id, req.body.emp_id);
     let result = employees.update(updatedEmp);
@@ -42,7 +38,6 @@ router.put('/', (req, res) => {
 
 // /app/employee
 // deletes employee
-// *RADI
 router.delete('/', (req, res) => {
     let result = employees.delete(req.query.emp_id);
     let msg;
