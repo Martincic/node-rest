@@ -1,4 +1,5 @@
 const dataLayer = require('companydata');
+const validator = require('./validator');
 
 class Employees {
     get(company, dept_id){
@@ -54,8 +55,14 @@ class Employees {
     }
 
     update(employee){
-        if(dataLayer.updateEmployee(employee) == null) return false;
-        else return true;
+        let response;
+        validator.clearValidator();
+        validator.validateUniqueEmplyeeID(employee.emp_id, employee.emp_id);
+        
+        if(validator.hasFailed()) response = { errors: validator.getErrors() };
+        else response = { data: dataLayer.updateEmployee(employee) };
+
+        return response;
     }
 
     delete(emp_id) {

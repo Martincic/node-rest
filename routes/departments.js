@@ -19,7 +19,6 @@ router.get('/', (req, res) => {
 // /app/department
 // creates new department
 router.post('/', (req, res) => {
-    console.log(req.body);
     let dept = departments.insert(req.body.company, req.body.dept_name, req.body.dept_no, req.body.location);
     res.json(dept);
 });
@@ -36,14 +35,7 @@ router.put('/', (req, res) => {
 // deletes department
 router.delete('/', (req, res) => {
     let result = departments.delete(req.query.company, req.query.dept_id);
-    let msg;
-    if(result) {
-        msg = "Successfull deletion of department "+req.query.dept_id + " for company " + req.query.company;
-    }
-    else msg = "An error occured. No departments were deleted. Please check company name and department id."
-    res.json({
-        data: msg
-    });
+    res.json(result);
 });
 
 module.exports = router;

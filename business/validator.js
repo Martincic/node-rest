@@ -65,6 +65,7 @@ class Validator {
 
     departmentExists(company, dept_id){
         let dept = dataLayer.getDepartment(company, dept_id);
+        console.log(dept_id);
         if(isNaN(dept_id)){
             this.addErr("Entered department id " + dept_id + " is not a number.");
         }
@@ -94,9 +95,9 @@ class Validator {
         let dept_nos = []
 
         dataLayer.getAllDepartment(company).forEach(department => {
-            if(department.emp_id != current) emp_nos.push(department.emp_id)
+            if(department.dept_no != current) dept_nos.push(department.dept_no)
         });
-        if(emp_nos.includes(dept_no)) this.addErr("Department with id:" +dept_no+" already exists for company "+ company + ".");
+        if(dept_nos.includes(dept_no)) this.addErr("Department number:" +dept_no+" already exists for company "+ company + ".");
     }
 
     validateHireDate(hire_date){
@@ -121,7 +122,7 @@ class Validator {
 
         if(end.isBefore(start)) addErr("The start date must be before end date");
         if(!end.isSame(start)) addErr("Start and end dates must be on the same date");
-        if(business.isWeekendDay(start)) addErr("Start date cannot occur on Saturday or Sunday.");
+        if(business.isWeekyyyyyendDay(start)) addErr("Start date cannot occur on Saturday or Sunday.");
 
         if( (end.hour - start.hour) < 1) addErr("There must be at least 1 hour difference between timestamps.");
         if(start.hour < 6) addErr("Start hour must be after 6am");
@@ -130,18 +131,14 @@ class Validator {
         if( (start.dayOfYear - this.now.dayOfYear) > 7) addErr("You can't start more then 7 days ago.");
 
         timecards = dataLayer.getAllTimecard(emp_id);
-        start_dates = [];
+        existing_dates = [];
         
         timecards.forEach(timecard => {
-            
+            parsed = moment(Date.parse(timecard.startdate));
+            existing_dates.push(moment(parsed));
         });
-        // for(Timecard tc: timecards) {
-        //     Calendar tc_start = Calendar.getInstance();
-        //     tc_start.setTimeInMillis(tc.getStartTime().getTime());
-        //     start_dates.add(tc_start.get(Calendar.DAY_OF_YEAR));
-        // }
-        // // if array item exists, addErr
-        // if(!update && start_dates.contains(start.get(Calendar.DAY_OF_YEAR))) addErr("A timecard already exists for the given date.");
+
+        if(existing_dates.includes(start)) addErr("A timecard already exists for the given date.");
     }
 }
 

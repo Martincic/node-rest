@@ -1,31 +1,32 @@
 const dataLayer = require('companydata');
 const validator = require('./validator');
+const { Department } = require('companydata');
 
 class Departments {
+
+
     get(company){
         let response;
-        if (company){
-            let result = dataLayer.getAllDepartment(company);
-            if(result != null && result.length > 0) {
-                response = result;
-            }else {
-                response = {"error": "No departments found for " + company + '.'};
-            }
-        } else {
-            response = { "error": "The company name is missing." };
+        validator.clearValidator();
+        
+        if (!company){
+            response = { "error": "Enter missing company name." };
+        }else {
+            let dept = dataLayer.getAllDepartment(company);
+            validator.isEmpty(dept, "company: " + company);
+            
+            if(validator.hasFailed()) 
+                response = {"errors": validator.getErrors()};
+            else
+                response = dept;
         }
+                        
         return response;
     }
 
     getSingle(company, dept_id){
         let response;
         validator.clearValidator();
-        // validator.isInput(company,"Enter company name.");
-        // validator.isInput(dept_id,"Enter department id.");
-
-        // if(validator.hasFailed())
-        // response = {"errors": validator.getErrors()};
-        // else {
 
         if (!company){
             response = { "error": "Enter missing company name." };
@@ -46,33 +47,69 @@ class Departments {
 
     insert(company, dept_name, dept_no, location){
         let response;
-        //todo: provjera za dept_id
-        if (company){
-            let dept = new dataLayer.Department(company,dept_name, dept_no, location);
-            let result = dataLayer.insertDepartment(dept);
+        validator.clearValidator();
 
-            if(result != null) {
+        if (!company){
+            response = { "error": "Enter missing company name." };
+
+        }else if(!dept_name){
+            response = { "error": "Enter missing department name." };
+            
+        }else if(!dept_no){
+            response = { "error": "Enter missing department number." };
+
+        }else if(!location){
+            response = { "error": "Enter missing location." };
+
+        }else {
+            validator.validateUniqueDeptNo(company, dept_no, "0");
+            if(validator.hasFailed()) 
+                response = {"errors": validator.getErrors()};
+            else{
+                let dept = new Department(company,dept_name, dept_no, location);
+                let result = dataLayer.insertDepartment(dept);
+                console.log(result);
                 response = result;
-            }else {
-                response = {"error": "Can't add department: " +  dept_name + ', dept_no:' + dept_no + ' company: ' + company + ', location:' + location + ' .'};
+
             }
-        } else {
-            response = { "error": "The comapny name is missing." };
         }
-        return response;
+        return response;     
     }
 
     update(department){
-        return dataLayer.updateDepartment(department);
+        let response;
+        validator.clearValidator();
+
+        validator.validateUniqueDeptNo(department.company, department.dept_no, department.dept_no);
+        validator.departmentExists(department.company, department.dept_id);
+
+        if(validator.hasFailed()) response = { errors: validator.getErrors() };
+        else response = { data: dataLayer.updateDepartment(department) };
+
+        return response;
     }
 
     delete(company, dept_id){
-        console.log(company, dept_id);
-        let response = dataLayer.deleteDepartment(company, dept_id);
+        let response;
+        validator.clearValidator();
 
-        if (response == 0) return false;
-        
-        return true;
+        if (!company){
+            response = { "error": "Enter missing company name." };
+
+        }else if(!dept_id){
+            response = { "error": "Enter missing department id." };
+        }else {
+            validator.departmentExists(company, dept_id);
+
+            console.log(validator.hasFailed());
+            if(validator.hasFailed()) 
+                response = { errors: validator.getErrors() };
+            else{
+                dataLayer.deleteDepartment(company, dept_id);
+                response = {success: "Department " + dept_id + " from " + company + " deleted." };
+            }
+        }
+        return response;
     }
 }
 
