@@ -1,6 +1,5 @@
 const { Timecard } = require('companydata');
 const express = require('express');
-const { update } = require('../business/timecards');
 const router = express.Router();
 const timecards = require('../business/timecards');
 
@@ -20,7 +19,6 @@ router.get('/', (req, res) => {
 // /app/timecard
 // creates new timecard
 router.post('/', (req, res) => {
-    console.log(req.body);
     let tc = timecards.insert(req.body.emp_id, req.body.start_time, req.body.end_time);
     res.json(tc);
 });

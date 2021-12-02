@@ -114,7 +114,6 @@ class Validator {
      validateTimecardDates(startdate, enddate, emp_id, update = false) {
         let start = moment(Date.parse(startdate));
         let end = moment(Date.parse(enddate));
-        console.log(start.get('hour'), startdate, end.get('hour'), enddate);
         if(end.isBefore(start)) this.addErr("The start date must be before end date");
         if(!end.isSame(start, 'day')) this.addErr("Start and end dates must be on the same date");
         if(business.isWeekendDay(start)) this.addErr("Start date cannot occur on Saturday or Sunday.");

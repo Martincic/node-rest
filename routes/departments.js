@@ -1,6 +1,5 @@
 const { Department } = require('companydata');
 const express = require('express');
-const { update } = require('../business/departments');
 const router = express.Router();
 const departments = require('../business/departments');
 

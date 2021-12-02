@@ -74,18 +74,6 @@ class Timecards {
         else response = { success: dataLayer.updateTimecard(timecard) };
 
         return response;
-
-        // let tc = dataLayer.getTimecard(timecard.timecard_id);
-
-        // if(timecard == null) return "Timecard does not exist";
-        
-        // tc.setStartTime(timecard.start_time);
-        // tc.setEndTime(timecard.end_time);
-        // tc.setId(timecard.timecard_id);
-        // let updated = dataLayer.updateTimecard(tc);
-
-        // if(updated == null) return "Error!";
-        // else return updated;
     }
 
     delete(timecard_id) {
@@ -106,9 +94,6 @@ class Timecards {
             }
         }
         return response;
-
-        // if(dataLayer.deleteTimecard(timecard_id) == 0) return false;
-        // else return true;
     }
 }
 
