@@ -1,5 +1,4 @@
 const dataLayer = require('companydata');
-const { employeeExists } = require('./validator');
 const validator = require('./validator');
 
 class Timecards {
